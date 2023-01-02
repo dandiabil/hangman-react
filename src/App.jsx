@@ -8,6 +8,7 @@ function App() {
   const word = "TESTING";
   const [input, setInput] = useState("");
   const [arrayOfLetter, setArrayOfLetter] = useState([]);
+  const [wrongLetter, setWrongLetter] = useState([]);
 
   const checkHandler = (e) => {
     e.preventDefault();
@@ -16,13 +17,21 @@ function App() {
 
     setArrayOfLetter((prev) => checkInput(input, prev));
 
+    const inputted = arrayOfLetter.findIndex(
+      (item) => item.data == input.toUpperCase()
+    );
+
+    if (inputted == -1) {
+      setWrongLetter((prev) => [...prev, input]);
+    }
+
     setInput("");
   };
 
   useEffect(() => {
     if (!word) return;
 
-    setArrayOfLetter(splitLetter(word));
+    setArrayOfLetter(splitLetter(word.toUpperCase()));
   }, [word]);
 
   return (
@@ -30,6 +39,7 @@ function App() {
       <header>
         <h1>HANGMAN</h1>
       </header>
+      {/* TO ADD: HINT FEATURES */}
       <Placeholder arrayOfLetter={arrayOfLetter} />
       <form>
         <input
@@ -40,6 +50,14 @@ function App() {
         />
         <button onClick={checkHandler}>Check</button>
       </form>
+      <div>
+        <p>
+          Wrong Letters:{" "}
+          {wrongLetter.map((item, idx) => (
+            <span key={idx}>{item}</span>
+          ))}
+        </p>
+      </div>
     </div>
   );
 }
